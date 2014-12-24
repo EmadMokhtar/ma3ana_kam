@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>
+                wasfha
+            </th>
+            <th>
+                tebtedy emta
+            </th>
+            <th>
+                tentehy emta
+            </th>
+            <th>
+                el mafrod tesref kam
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for period in periods %}
+            <tr>
+                <td>
+                    {{ period.description }}
+                </td>
+                <td>
+                    {{ period.start_date }}
+                </td>
+                <td>
+                    {{ period.end_date }}
+                </td>
+                 <td>
+                    {{ period.amount }}
+                </td>
+                <td>
+                    <a class="btn btn-primary" href="{% url 'update_period' period.id %}">3'ayar</a>
+                    <a class="btn btn-danger" href="{% url 'delete_period' period.id %}">shelha</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

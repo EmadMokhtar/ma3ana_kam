@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <form method="post">{% csrf_token %}
+        <h3>
+            Enta mota2ked enak 3ayez tedalet el <b>{{ model_name }}</b> de --> <b>{{ model.description }}</b> ?
+        </h3>
+
+        <div>
+            <input type="submit" value="2a mota2aked" class="btn btn-danger"/>
+            <input type="button" class="btn btn-default goBackButton" value="la ya 3am erga3">
+        </div>
+    </form>
+    {% block script %}
+        <script type="application/javascript">
+            $(document).ready(function () {
+
+                $('.goBackButton').click(function (e) {
+                    e.preventDefault();
+                    history.back();
+                });
+            });
+        </script>
+    {% endblock %}
+{% endblock %}
