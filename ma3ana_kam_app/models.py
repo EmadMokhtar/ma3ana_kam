@@ -8,6 +8,7 @@ class PeriodManager(models.Manager):
     def get_period_for_date(self, date):
         try:
             period = self.filter(start_date__lte=date, end_date__gte=date)[0]
+
         except IndexError:
             period = None
         return period
@@ -18,8 +19,8 @@ class PeriodManager(models.Manager):
 
 class Period(models.Model):
     # The period that will contain the expected total amount of expenses
-    start_date = models.DateField(default=datetime.datetime.now())
-    end_date = models.DateField(default=datetime.datetime.now())
+    start_date = models.DateField()
+    end_date = models.DateField()
     amount = models.DecimalField(max_digits=8, decimal_places=3)
     description = models.CharField(max_length=200)
     objects = PeriodManager()
