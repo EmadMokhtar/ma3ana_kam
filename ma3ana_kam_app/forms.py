@@ -41,7 +41,11 @@ class PeriodForm(ModelForm):
 
         period_from_start_date = Period.objects.get_period_for_date(period_start_date)
         period_from_end_date = Period.objects.get_period_for_date(period_end_date)
-        if period_from_start_date:
+
+        if period_start_date >= period_end_date:
+            raise forms.ValidationError('Please check the start date and end date, '
+                                        'start date can not be as same or after end date')
+        elif period_from_start_date:
             raise forms.ValidationError('Please check the start date, it is overlapping with other period')
         elif period_from_end_date:
             raise forms.ValidationError('Please check the end date, it is overlapping with other period')
