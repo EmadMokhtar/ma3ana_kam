@@ -5,16 +5,16 @@
         <thead>
         <tr>
             <th>
-                wasfha
+                Description
             </th>
             <th>
-                tebtedy emta
+                Start Date
             </th>
             <th>
-                tentehy emta
+                End Date
             </th>
             <th>
-                el mafrod tesref kam
+                Amount
             </th>
         </tr>
         </thead>
@@ -22,7 +22,7 @@
         {% for period in periods %}
             <tr>
                 <td>
-                    {{ period.description }}
+                    <a href="{% url 'update_period' period.id %}">{{ period.description }}</a>
                 </td>
                 <td>
                     {{ period.start_date }}
