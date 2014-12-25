@@ -11,7 +11,7 @@ urlpatterns = patterns('',
                        url(r'^period/new$', views.add_period, name='add_period'),
                        url(r'^period/edit/(?P<pk>\d+)$', views.update_period, name='update_period'),
                        url(r'^period/delete/(?P<pk>\d+)$', views.delete_period, name='delete_period'),
-                       url(r'^period/list/(?P<index_number>\d+)/(?P<page_size>\d+)/$', views.period_list,
+                       url(r'^period/list/$', views.period_list,
                            name='period_list'),
                        url(r'^admin/', include(admin.site.urls)),
 

@@ -5,6 +5,33 @@
         <thead>
         <tr>
             <th>
+                <nav>
+                    <ul class="pager">
+                        <li class="previous"><a href="?page={{ contacts.previous_page_number }}"><span
+                                aria-hidden="true">&larr;</span> Older</a></li>
+                    </ul>
+                </nav>
+            </th>
+            <th>
+
+            </th>
+            <th>
+
+            </th>
+            <th>
+
+            </th>
+            <th>
+                <nav>
+                    <ul class="pager">
+                        <li class="next"><a href="?page={{ contacts.next_page_number }}">Newer <span
+                                aria-hidden="true">&rarr;</span></a></li>
+                    </ul>
+                </nav>
+            </th>
+        </tr>
+        <tr>
+            <th>
                 Description
             </th>
             <th>
@@ -15,6 +42,9 @@
             </th>
             <th>
                 Amount
+            </th>
+            <th>
+                Actions
             </th>
         </tr>
         </thead>
@@ -30,7 +60,7 @@
                 <td>
                     {{ period.end_date }}
                 </td>
-                 <td>
+                <td>
                     {{ period.amount }}
                 </td>
                 <td>

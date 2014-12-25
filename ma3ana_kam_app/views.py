@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect, get_object_or_404
 from ma3ana_kam_app.models import Expense, Period
 import datetime
@@ -76,7 +77,18 @@ def delete_period(request, pk):
     return render(request, 'ma3ana_kam_app/model_delete.html', {'model': period, 'model_name': 'Period'})
 
 
-def period_list(request, index_number, page_size):
-    periods = Period.objects.get_period_list_sliced(index_number, page_size)
+def period_list(request):
+    periods = Period.objects.all()
 
-    return render(request, 'ma3ana_kam_app/period_list.html', {'periods': periods})
+    paginator = Paginator(periods, 10)
+    page = request.GET.get('page')
+
+    try:
+        periods_sliced = paginator.page(page)
+    except PageNotAnInteger:
+        periods_sliced = paginator.page(1)
+    except EmptyPage:
+        periods_sliced = paginator.page(paginator.num_pages)
+
+
+    return render(request, 'ma3ana_kam_app/period_list.html', {'periods': periods_sliced})
