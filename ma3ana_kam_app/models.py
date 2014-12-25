@@ -31,14 +31,17 @@ class Period(models.Model):
         ordering = ['start_date']
 
     @property
+    def get_expense_total(self):
+        return Expense.objects.filter(period=self).aggregate(Sum('amount')).get('amount__sum')
+
+    @property
     def remaining_amount(self):
-        expenses_total = Expense.objects.filter(period=self).aggregate(Sum('amount'))
-        return self.amount - expenses_total.get('amount__sum')
+        return self.amount - self.get_expense_total
 
     @property
     def remaining_percentage(self):
-        expenses_total = Expense.objects.filter(period=self).aggregate(Sum('amount'))
-        return (expenses_total.get('amount__sum') / self.amount) * decimal.Decimal(100)
+        total = self.get_expense_total
+        return (total / self.amount) * decimal.Decimal(100)
 
 
 class Expense(models.Model):
@@ -56,7 +59,6 @@ class Expense(models.Model):
     def save(self, *args, **kwargs):
         self.period = Period.objects.get_period_for_date(self.date)
         return super(Expense, self).save(*args, **kwargs)
-
 
     class Meta:
         ordering = ['period', 'date']
