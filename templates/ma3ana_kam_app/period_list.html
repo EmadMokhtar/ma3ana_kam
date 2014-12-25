@@ -34,8 +34,8 @@
                     {{ period.amount }}
                 </td>
                 <td>
-                    <a class="btn btn-primary" href="{% url 'update_period' period.id %}">3'ayar</a>
-                    <a class="btn btn-danger" href="{% url 'delete_period' period.id %}">shelha</a>
+                    <a class="btn btn-primary" href="{% url 'update_period' period.id %}">Edit</a>
+                    <a class="btn btn-danger" href="{% url 'delete_period' period.id %}">Delete</a>
                 </td>
             </tr>
         {% endfor %}
