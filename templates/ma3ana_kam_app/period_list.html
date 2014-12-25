@@ -52,7 +52,7 @@
         {% for period in periods %}
             <tr>
                 <td>
-                    <a href="{% url 'update_period' period.id %}">{{ period.description }}</a>
+                    <a href="{% url 'period_details' period.id %}">{{ period.description }}</a>
                 </td>
                 <td>
                     {{ period.start_date }}

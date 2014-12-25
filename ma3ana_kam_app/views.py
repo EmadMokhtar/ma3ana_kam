@@ -10,7 +10,7 @@ def index(request):
     current_period = Period.objects.get_period_for_date(now)
     current_expenses = Expense.objects.filter(period=current_period)
 
-    return render(request, 'ma3ana_kam_app/index.html', {'period': current_period, 'expenses': current_expenses})
+    return render(request, 'ma3ana_kam_app/period_details.html', {'period': current_period, 'expenses': current_expenses})
 
 
 def add_expense(request):
@@ -90,5 +90,11 @@ def period_list(request):
     except EmptyPage:
         periods_sliced = paginator.page(paginator.num_pages)
 
-
     return render(request, 'ma3ana_kam_app/period_list.html', {'periods': periods_sliced})
+
+
+def period_details(request, pk):
+    period = Period.objects.get(pk=pk)
+    expenses = Expense.objects.filter(period=period)
+
+    return render(request, 'ma3ana_kam_app/period_details.html', {'period': period, 'expenses': expenses})
