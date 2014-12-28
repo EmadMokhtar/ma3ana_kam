@@ -1,5 +1,6 @@
 import decimal
 import datetime
+from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Sum
 
@@ -23,6 +24,7 @@ class Period(models.Model):
     end_date = models.DateField()
     amount = models.DecimalField(max_digits=8, decimal_places=3)
     description = models.CharField(max_length=200)
+    user = models.ForeignKey(User)
     objects = PeriodManager()
 
     def __unicode__(self):
@@ -51,6 +53,7 @@ class Expense(models.Model):
     description = models.CharField(max_length=200)
     amount = models.DecimalField(max_digits=8, decimal_places=3)
     period = models.ForeignKey(Period)
+    user = models.ForeignKey(User)
 
     def __unicode__(self):
         return self.description
