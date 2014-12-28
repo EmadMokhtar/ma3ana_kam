@@ -13,6 +13,8 @@ urlpatterns = patterns('',
                        url(r'^period/delete/(?P<pk>\d+)$', views.delete_period, name='delete_period'),
                        url(r'^period/list/$', views.period_list, name='period_list'),
                        url(r'^period/details/(?P<pk>\d+)$', views.period_details, name='period_details'),
+                       url(r'login/$', 'django.contrib.auth.views.login', {'template_name': 'auth/login.html'},
+                           name='login'),
+                       url(r'logout/$', 'django.contrib.auth.views.logout', {'next_page': '/'}, name='logout'),
                        url(r'^admin/', include(admin.site.urls)),
-
                        )

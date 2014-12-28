@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect, get_object_or_404
 from ma3ana_kam_app.models import Expense, Period
@@ -5,6 +6,7 @@ import datetime
 from ma3ana_kam_app.forms import ExpenseForm, PeriodForm
 
 
+@login_required()
 def index(request):
     now = datetime.datetime.utcnow()
     current_period = Period.objects.get_period_for_date(now)
@@ -13,6 +15,7 @@ def index(request):
     return render(request, 'ma3ana_kam_app/period_details.html', {'period': current_period, 'expenses': current_expenses})
 
 
+@login_required()
 def add_expense(request):
     expense_form = ExpenseForm(request.POST or None)
 
@@ -24,6 +27,7 @@ def add_expense(request):
     return render(request, 'ma3ana_kam_app/expense_form.html', {'form': expense_form})
 
 
+@login_required()
 def update_expense(request, pk):
     expense = get_object_or_404(Expense, pk=pk)
     expense_form = ExpenseForm(request.POST or None, instance=expense)
@@ -36,6 +40,7 @@ def update_expense(request, pk):
     return render(request, 'ma3ana_kam_app/expense_form.html', {'form': expense_form})
 
 
+@login_required()
 def delete_expense(request, pk):
     expense = get_object_or_404(Expense, pk=pk)
 
@@ -46,6 +51,7 @@ def delete_expense(request, pk):
     return render(request, 'ma3ana_kam_app/model_delete.html', {'model': expense, 'model_name': 'expense'})
 
 
+@login_required()
 def add_period(request):
     period_form = PeriodForm(request.POST or None)
 
@@ -56,6 +62,7 @@ def add_period(request):
     return render(request, 'ma3ana_kam_app/period_form.html', {'form': period_form})
 
 
+@login_required()
 def update_period(request, pk):
     period = get_object_or_404(Period, pk=pk)
     period_form = PeriodForm(request.POST or None, instance=period)
@@ -67,6 +74,7 @@ def update_period(request, pk):
     return render(request, 'ma3ana_kam_app/period_form.html', {'form': period_form})
 
 
+@login_required()
 def delete_period(request, pk):
     period = get_object_or_404(Period, pk=pk)
 
@@ -77,6 +85,7 @@ def delete_period(request, pk):
     return render(request, 'ma3ana_kam_app/model_delete.html', {'model': period, 'model_name': 'Period'})
 
 
+@login_required()
 def period_list(request):
     periods = Period.objects.all()
 
@@ -93,6 +102,7 @@ def period_list(request):
     return render(request, 'ma3ana_kam_app/period_list.html', {'periods': periods_sliced})
 
 
+@login_required()
 def period_details(request, pk):
     period = Period.objects.get(pk=pk)
     expenses = Expense.objects.filter(period=period)
