@@ -1,21 +1,19 @@
 import decimal
 import datetime
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Sum
 
 
 class PeriodManager(models.Manager):
-    def get_period_for_date(self, date):
+    def get_period_for_date(self, date, logged_in_user):
         try:
-            period = self.filter(start_date__lte=date, end_date__gte=date)[0]
+            period = self.filter(start_date__lte=date, end_date__gte=date, user=logged_in_user)
 
         except IndexError:
             period = None
         return period
-
-    def get_period_list_sliced(self, index_number, page_number):
-        return self.all()[index_number:page_number]
 
 
 class Period(models.Model):
@@ -29,6 +27,28 @@ class Period(models.Model):
 
     def __unicode__(self):
         return self.description
+
+    def validate(self, *args, **kwargs):
+
+        if self.id:
+            period_from_start_date = Period.objects.get_period_for_date(self.start_date, self.user).exculde(pk=self.id)
+            period_from_end_date = Period.objects.get_period_for_date(self.end_date, self.user).exculde(pk=self.id)
+        else:
+            period_from_start_date = Period.objects.get_period_for_date(self.start_date, self.user)
+            period_from_end_date = Period.objects.get_period_for_date(self.end_date, self.user)
+
+        if self.start_date >= self.end_date:
+            raise ValidationError('Please check the start date and end date, '
+                                  'start date can not be as same or after end date')
+        elif period_from_start_date:
+            raise ValidationError('Please check the start date, it is overlapping with other period')
+        elif period_from_end_date:
+            raise ValidationError('Please check the end date, it is overlapping with other period')
+
+    def save(self, *args, **kwargs):
+
+        self.validate()
+        super(Period, self).save(*args, **kwargs)
 
     class Meta:
         ordering = ['start_date']
@@ -61,9 +81,15 @@ class Expense(models.Model):
     ''' Get the correct period for the expense entry date'''
 
     def save(self, *args, **kwargs):
-        self.period = Period.objects.get_period_for_date(self.date)
+        self.validate()
+        self.period = Period.objects.get_period_for_date(self.date, self.user)[0]
+
         return super(Expense, self).save(*args, **kwargs)
+
+    def validate(self):
+        period = Period.objects.get_period_for_date(self.date, self.user)
+        if not period:
+            raise ValidationError('Please check the date, there is no period in this date.')
 
     class Meta:
         ordering = ['period', 'date']
-

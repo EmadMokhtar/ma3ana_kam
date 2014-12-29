@@ -9,23 +9,23 @@ from ma3ana_kam_app.forms import ExpenseForm, PeriodForm
 @login_required()
 def index(request):
     now = datetime.datetime.utcnow()
-    current_period = Period.objects.get_period_for_date(now)
+    current_period = Period.objects.get_period_for_date(now, request.user)[0]
     current_expenses = Expense.objects.filter(period=current_period)
 
-    return render(request, 'ma3ana_kam_app/period_details.html', {'period': current_period, 'expenses': current_expenses})
+    return render(request, 'ma3ana_kam_app/period_details.html',
+                  {'period': current_period, 'expenses': current_expenses})
 
 
 @login_required()
 def add_expense(request):
     expense_form = ExpenseForm(request.POST or None)
-
-    if expense_form.is_valid():
-        expense_form.save()
-
+    if request.method == 'POST':
+        expense = expense_form.save(commit=False)
+        expense.user = request.user
+        expense.save()
         return redirect('/')
 
     return render(request, 'ma3ana_kam_app/expense_form.html', {'form': expense_form})
-
 
 @login_required()
 def update_expense(request, pk):
@@ -34,7 +34,6 @@ def update_expense(request, pk):
 
     if expense_form.is_valid():
         expense_form.save()
-
         return redirect('/')
 
     return render(request, 'ma3ana_kam_app/expense_form.html', {'form': expense_form})
@@ -55,8 +54,10 @@ def delete_expense(request, pk):
 def add_period(request):
     period_form = PeriodForm(request.POST or None)
 
-    if period_form.is_valid():
-        period_form.save()
+    if request.method == 'POST':
+        period = period_form.save(commit=False)
+        period.user = request.user
+        period.save()
         return redirect('/')
 
     return render(request, 'ma3ana_kam_app/period_form.html', {'form': period_form})
@@ -68,7 +69,9 @@ def update_period(request, pk):
     period_form = PeriodForm(request.POST or None, instance=period)
 
     if period_form.is_valid():
-        period_form.save()
+        period_date = period_form.save(commit=False)
+        period_date.user = request.user
+        period_date.save()
         return redirect('/')
 
     return render(request, 'ma3ana_kam_app/period_form.html', {'form': period_form})
