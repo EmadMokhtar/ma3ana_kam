@@ -1,9 +1,10 @@
 import decimal
 import datetime
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
+from django.forms import ValidationError
 from django.db import models
 from django.db.models import Sum
+from django.utils.translation import ugettext_lazy as _
 
 
 class PeriodManager(models.Manager):
@@ -28,7 +29,7 @@ class Period(models.Model):
     def __unicode__(self):
         return self.description
 
-    def validate(self, *args, **kwargs):
+    def validate(self):
 
         if self.id:
             period_from_start_date = Period.objects.get_period_for_date(self.start_date, self.user).exculde(pk=self.id)
@@ -38,12 +39,12 @@ class Period(models.Model):
             period_from_end_date = Period.objects.get_period_for_date(self.end_date, self.user)
 
         if self.start_date >= self.end_date:
-            raise ValidationError('Please check the start date and end date, '
-                                  'start date can not be as same or after end date')
+            raise ValidationError(_('Please check the start date and end date, '
+                                  'start date can not be as same or after end date'))
         elif period_from_start_date:
-            raise ValidationError('Please check the start date, it is overlapping with other period')
+            raise ValidationError(_('Please check the start date, it is overlapping with other period'))
         elif period_from_end_date:
-            raise ValidationError('Please check the end date, it is overlapping with other period')
+            raise ValidationError(_('Please check the end date, it is overlapping with other period'))
 
     def save(self, *args, **kwargs):
 
@@ -78,8 +79,7 @@ class Expense(models.Model):
     def __unicode__(self):
         return self.description
 
-    ''' Get the correct period for the expense entry date'''
-
+    '''Get the correct period for the expense entry date'''
     def save(self, *args, **kwargs):
         self.validate()
         self.period = Period.objects.get_period_for_date(self.date, self.user)[0]

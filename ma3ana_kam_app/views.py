@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect, get_object_or_404
 from ma3ana_kam_app.models import Expense, Period
@@ -19,13 +20,21 @@ def index(request):
 @login_required()
 def add_expense(request):
     expense_form = ExpenseForm(request.POST or None)
-    if request.method == 'POST':
-        expense = expense_form.save(commit=False)
-        expense.user = request.user
-        expense.save()
-        return redirect('/')
+    errors = None
 
-    return render(request, 'ma3ana_kam_app/expense_form.html', {'form': expense_form})
+    if request.method == 'POST':
+        try:
+            expense = expense_form.save(commit=False)
+            expense.user = request.user
+            expense.save()
+            return redirect('/')
+        except ValidationError as e:
+            errors = e.messages
+        except ValueError as e:
+            return render(request, 'ma3ana_kam_app/expense_form.html', {'form': expense_form, 'errors': errors})
+
+    return render(request, 'ma3ana_kam_app/expense_form.html', {'form': expense_form, 'errors': errors})
+
 
 @login_required()
 def update_expense(request, pk):
@@ -53,14 +62,21 @@ def delete_expense(request, pk):
 @login_required()
 def add_period(request):
     period_form = PeriodForm(request.POST or None)
+    errors = None
 
     if request.method == 'POST':
-        period = period_form.save(commit=False)
-        period.user = request.user
-        period.save()
-        return redirect('/')
+        try:
+            period = period_form.save(commit=False)
+            period.user = request.user
+            period.save()
 
-    return render(request, 'ma3ana_kam_app/period_form.html', {'form': period_form})
+            return redirect('/')
+        except ValidationError as e:
+            errors = e.messages
+        except ValueError:
+            return render(request, 'ma3ana_kam_app/period_form.html', {'form': period_form, 'errors': errors})
+
+    return render(request, 'ma3ana_kam_app/period_form.html', {'form': period_form, 'errors': errors})
 
 
 @login_required()
