@@ -75,17 +75,10 @@ DATABASES = {
 
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ma3anakAOIpb6din',
-        'HOST': 'eu-cdbr-azure-west-b.cloudapp.net',
-        'USER': 'b420f284edf506',
-        'PASSWORD': 'd753f656',
-        'OPTIONS': {'ssl':
-                        {
-                            'ca': 'ma3ana_kam_app/cleardb-ca.pem',
-                            'cert': 'ma3ana_kam_app/dd905cfff4ef33-cert.pem',
-                            'key': 'ma3ana_kam_app/dd905cfff4ef33-key.pem'
-                        },
-        },
+        'NAME': 'ma3anakam',
+        'HOST': 'mysql.server',
+        'USER': 'emadmokhtar',
+        'PASSWORD': 'Pa$$W0rd',
     }
 }
 
