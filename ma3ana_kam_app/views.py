@@ -10,8 +10,12 @@ from ma3ana_kam_app.forms import ExpenseForm, PeriodForm
 @login_required()
 def index(request):
     now = datetime.datetime.utcnow()
-    current_period = Period.objects.get_period_for_date(now, request.user)[0]
-    current_expenses = Expense.objects.filter(period=current_period)
+    try:
+        current_period = Period.objects.get_period_for_date(now, request.user)[0]
+        current_expenses = Expense.objects.filter(period=current_period)
+    except IndexError:
+        current_period = None
+        current_expenses = None
 
     return render(request, 'ma3ana_kam_app/period_details.html',
                   {'period': current_period, 'expenses': current_expenses})
