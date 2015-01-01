@@ -65,13 +65,21 @@ WSGI_APPLICATION = 'ma3ana_kam.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'ma3ana_kam',
         'HOST': 'localhost',
         'USER': 'EmadMokhtar',
         'PASSWORD': 'asdASD123',
         'PORT': '5433'
     }
+
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': 'ma3anakam',
+    #     'HOST': 'mysql.server',
+    #     'USER': 'emadmokhtar',
+    #     'PASSWORD': 'Pa$$W0rd',
+    # }
 }
 
 # Internationalization
@@ -92,6 +100,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = '/static/'
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
