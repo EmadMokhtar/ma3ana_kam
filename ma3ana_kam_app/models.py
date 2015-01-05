@@ -16,6 +16,9 @@ class PeriodManager(models.Manager):
             period = None
         return period
 
+    def get_period_for_user(self, logged_in_user):
+        return self.filter(user=logged_in_user)
+
 
 class Period(models.Model):
     # The period that will contain the expected total amount of expenses
@@ -30,10 +33,12 @@ class Period(models.Model):
         return self.description
 
     def validate(self):
+        period_from_start_date = Period.objects.get_period_for_date(self.start_date, self.user)
+        period_from_end_date = Period.objects.get_period_for_date(self.end_date, self.user)
 
         if self.id:
-            period_from_start_date = Period.objects.get_period_for_date(self.start_date, self.user).exculde(pk=self.id)
-            period_from_end_date = Period.objects.get_period_for_date(self.end_date, self.user).exculde(pk=self.id)
+            period_from_start_date = Period.objects.get_period_for_date(self.start_date, self.user).exclude(pk=self.id)
+            period_from_end_date = Period.objects.get_period_for_date(self.end_date, self.user).exclude(pk=self.id)
         else:
             period_from_start_date = Period.objects.get_period_for_date(self.start_date, self.user)
             period_from_end_date = Period.objects.get_period_for_date(self.end_date, self.user)

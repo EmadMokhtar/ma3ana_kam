@@ -110,7 +110,7 @@ def delete_period(request, pk):
 
 @login_required()
 def period_list(request):
-    periods = Period.objects.all()
+    periods = Period.objects.get_period_for_user(request.user)
 
     paginator = Paginator(periods, 10)
     page = request.GET.get('page')
