@@ -5,16 +5,46 @@
         <thead>
         <tr>
             <th>
-                wasfha
+                <nav>
+                    <ul class="pager">
+                        <li class="previous"><a href="?page={{ contacts.previous_page_number }}"><span
+                                aria-hidden="true">&larr;</span> Older</a></li>
+                    </ul>
+                </nav>
             </th>
             <th>
-                tebtedy emta
+
             </th>
             <th>
-                tentehy emta
+
             </th>
             <th>
-                el mafrod tesref kam
+
+            </th>
+            <th>
+                <nav>
+                    <ul class="pager">
+                        <li class="next"><a href="?page={{ contacts.next_page_number }}">Newer <span
+                                aria-hidden="true">&rarr;</span></a></li>
+                    </ul>
+                </nav>
+            </th>
+        </tr>
+        <tr>
+            <th>
+                Description
+            </th>
+            <th>
+                Start Date
+            </th>
+            <th>
+                End Date
+            </th>
+            <th>
+                Amount
+            </th>
+            <th>
+                Actions
             </th>
         </tr>
         </thead>
@@ -22,7 +52,7 @@
         {% for period in periods %}
             <tr>
                 <td>
-                    {{ period.description }}
+                    <a href="{% url 'period_details' period.id %}">{{ period.description }}</a>
                 </td>
                 <td>
                     {{ period.start_date }}
@@ -30,12 +60,12 @@
                 <td>
                     {{ period.end_date }}
                 </td>
-                 <td>
+                <td>
                     {{ period.amount }}
                 </td>
                 <td>
-                    <a class="btn btn-primary" href="{% url 'update_period' period.id %}">3'ayar</a>
-                    <a class="btn btn-danger" href="{% url 'delete_period' period.id %}">shelha</a>
+                    <a class="btn btn-primary" href="{% url 'update_period' period.id %}">Edit</a>
+                    <a class="btn btn-danger" href="{% url 'delete_period' period.id %}">Delete</a>
                 </td>
             </tr>
         {% endfor %}
