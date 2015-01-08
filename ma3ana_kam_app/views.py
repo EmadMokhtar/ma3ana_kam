@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from ma3ana_kam_app.models import Expense, Period
 import datetime
@@ -45,6 +46,9 @@ def update_expense(request, pk):
     expense = get_object_or_404(Expense, pk=pk)
     expense_form = ExpenseForm(request.POST or None, instance=expense)
 
+    if not expense.is_belong_to_user(request.user):
+        return HttpResponse('Unauthorized', 401)
+
     if expense_form.is_valid():
         expense_form.save()
         return redirect('/')
@@ -87,6 +91,9 @@ def add_period(request):
 def update_period(request, pk):
     period = get_object_or_404(Period, pk=pk)
     period_form = PeriodForm(request.POST or None, instance=period)
+
+    if not period.is_belong_to_user(request.user):
+        return HttpResponse('Unauthorized', 401)
 
     if period_form.is_valid():
         period_date = period_form.save(commit=False)

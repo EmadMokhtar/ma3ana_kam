@@ -72,6 +72,9 @@ class Period(models.Model):
         total = self.get_expense_total
         return (total / self.amount) * decimal.Decimal(100)
 
+    def is_belong_to_user(self, logged_in_user):
+        return self.user == logged_in_user
+
 
 class Expense(models.Model):
     # The expense entry against the expected amount for a period
@@ -95,6 +98,9 @@ class Expense(models.Model):
         period = Period.objects.get_period_for_date(self.date, self.user)
         if not period:
             raise ValidationError('Please check the date, there is no period in this date.')
+
+    def is_belong_to_user(self, logged_in_user):
+        return self.user == logged_in_user
 
     class Meta:
         ordering = ['period', 'date']
