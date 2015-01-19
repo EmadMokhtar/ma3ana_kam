@@ -7,7 +7,7 @@ from ma3ana_kam.input_types import DateTypeInput
 class ExpenseForm(ModelForm):
     class Meta:
         model = Expense
-        fields = ['date', 'amount', 'description']
+        fields = ['id', 'date', 'amount', 'description']
         exclude = ['user', 'period']
         widgets = {
             'date': DateTypeInput(attrs={'class': 'form-control'}),

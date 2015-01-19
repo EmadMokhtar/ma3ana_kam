@@ -96,9 +96,9 @@ def update_period(request, pk):
         return HttpResponse('Unauthorized', 401)
 
     if period_form.is_valid():
-        period_date = period_form.save(commit=False)
-        period_date.user = request.user
-        period_date.save()
+        period_data = period_form.save(commit=False)
+        period_data.user = request.user
+        period_data.save()
         return redirect('/')
 
     return render(request, 'ma3ana_kam_app/period_form.html', {'form': period_form})
