@@ -67,7 +67,7 @@
                     <b>{{ period.amount }}</b>/{{ period.remaining_amount }}
                 </td>
                 <td>
-                    <a class="btn btn-danger btn-sm" href="{% url 'delete_period' period.id %}">
+                    <a href="{% url 'delete_period' period.id %}">
                         <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
                 </td>
             </tr>
