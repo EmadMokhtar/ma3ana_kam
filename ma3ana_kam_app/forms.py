@@ -11,7 +11,7 @@ class ExpenseForm(ModelForm):
         exclude = ['user', 'period']
         widgets = {
             'date': DateTypeInput(attrs={'class': 'form-control'}),
-            'amount': forms.widgets.NumberInput(attrs={'step': '1', 'class': 'form-control'}),
+            'amount': forms.widgets.NumberInput(attrs={'step': 'any', 'class': 'form-control'}),
             'description': forms.widgets.TextInput(attrs={'class': 'form-control'})
         }
 
@@ -23,7 +23,7 @@ class PeriodForm(ModelForm):
         widgets = {
             'start_date': DateTypeInput(attrs={'class': 'form-control'}),
             'end_date': DateTypeInput(attrs={'class': 'form-control'}),
-            'amount': forms.widgets.NumberInput(attrs={'step': '1', 'class': 'form-control'}),
+            'amount': forms.widgets.NumberInput(attrs={'step': 'any', 'class': 'form-control'}),
             'description': forms.widgets.TextInput(attrs={'class': 'form-control'})
 
         }
