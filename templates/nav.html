@@ -1,6 +1,7 @@
 <nav class="navbar navbar-default navbar-static-top navbar-inverse" role="navigation">
     <div class="container">
         <div class="navbar-header">
+
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
                     aria-expanded="false" aria-controls="navbar">
                 <span class="sr-only">Toggle navigation</span>
@@ -8,31 +9,15 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="{% url 'home' %}">Ma3ana Kam</a>
+            <a id="open-menu" class="navbar-brand">
+                 <span class="glyphicon glyphicon glyphicon-align-justify" aria-hidden="true"></span>
+                Ma3ana Kam
+            </a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                <li><a href="{% url 'home' %}">Home</a></li>
-                <li><a href="{% url 'period_list' %}">Periods</a></li>
-            </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li class="dropdown navbar-right">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                        <span class="caret"></span></a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="{% url 'add_period' %}">Period</a></li>
-                        <li><a href="{% url 'add_expense' %}">Expense</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown navbar-right">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                        {{ user.username }}<span class="caret"></span></a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="{% url 'logout' %}">Logout</a></li>
-                    </ul>
-                </li>
-
+                <li><a href="#">Welcome {{ user.username }}</a></li>
+                <li><a href="{% url 'logout' %}">Logout</a></li>
             </ul>
         </div>
         <!--/.nav-collapse -->
