@@ -4,74 +4,76 @@
 {% endblock %}
 
 {% block content %}
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>
-                <nav>
-                    <ul class="pager">
-                        <li class="previous"><a href="?page={{ contacts.previous_page_number }}"><span
-                                aria-hidden="true">&larr;</span> Older</a></li>
-                    </ul>
-                </nav>
-            </th>
-            <th>
-
-            </th>
-            <th>
-
-            </th>
-            <th>
-
-            </th>
-            <th>
-                <nav>
-                    <ul class="pager">
-                        <li class="next"><a href="?page={{ contacts.next_page_number }}">Newer <span
-                                aria-hidden="true">&rarr;</span></a></li>
-                    </ul>
-                </nav>
-            </th>
-        </tr>
-        <tr>
-            <th>
-                Description
-            </th>
-            <th>
-                Start Date
-            </th>
-            <th>
-                End Date
-            </th>
-            <th>
-                Amount/Remaining
-            </th>
-            <th>
-                Delete
-            </th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for period in periods %}
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
             <tr>
-                <td>
-                    <a href="{% url 'period_details' period.id %}">{{ period.description }}</a>
-                </td>
-                <td>
-                    {{ period.start_date | date:'d/M/y'}}
-                </td>
-                <td>
-                    {{ period.end_date | date:'d/M/y' }}
-                </td>
-                <td>
-                    <b>{{ period.amount }}</b>/{{ period.remaining_amount }}
-                </td>
-                <td>
-                    <a href="{% url 'delete_period' period.id %}">
-                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
-                </td>
+                <th>
+                    <nav>
+                        <ul class="pager">
+                            <li class="previous"><a href="?page={{ contacts.previous_page_number }}"><span
+                                    aria-hidden="true">&larr;</span> Older</a></li>
+                        </ul>
+                    </nav>
+                </th>
+                <th>
+
+                </th>
+                <th>
+
+                </th>
+                <th>
+
+                </th>
+                <th>
+                    <nav>
+                        <ul class="pager">
+                            <li class="next"><a href="?page={{ contacts.next_page_number }}">Newer <span
+                                    aria-hidden="true">&rarr;</span></a></li>
+                        </ul>
+                    </nav>
+                </th>
             </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            <tr>
+                <th>
+                    Description
+                </th>
+                <th>
+                    Start Date
+                </th>
+                <th>
+                    End Date
+                </th>
+                <th>
+                    Amount/Remaining
+                </th>
+                <th>
+                    Delete
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for period in periods %}
+                <tr>
+                    <td>
+                        <a href="{% url 'period_details' period.id %}">{{ period.description }}</a>
+                    </td>
+                    <td>
+                        {{ period.start_date | date:'d/M/y'}}
+                    </td>
+                    <td>
+                        {{ period.end_date | date:'d/M/y' }}
+                    </td>
+                    <td>
+                        <b>{{ period.amount }}</b>/{{ period.remaining_amount }}
+                    </td>
+                    <td>
+                        <a href="{% url 'delete_period' period.id %}">
+                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}
