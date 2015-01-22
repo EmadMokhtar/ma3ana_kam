@@ -1,8 +1,10 @@
 <nav id="my-menu">
     <ul>
+        <li><a href="#"><i class="glyphicon glyphicon-user" aria-hidden="true"></i> Welcome {{ user.username }}</a></li>
         <li><a href="{% url 'home' %}"><i class="glyphicon glyphicon-home" aria-hidden="true"></i> Home</a></li>
         <li><a href="{% url 'add_period' %}"><i class="glyphicon glyphicon-plus" aria-hidden="true"></i> Period</a></li>
         <li><a href="{% url 'add_expense' %}"><i class="glyphicon glyphicon-plus" aria-hidden="true"></i> Expense</a></li>
         <li><a href="{% url 'period_list' %}"><i class="glyphicon glyphicon-list" aria-hidden="true"></i> Periods</a></li>
+        <li><a href="{% url 'logout' %}"><i class="glyphicon glyphicon-log-out" aria-hidden="true"></i> Logout</a></li>
     </ul>
 </nav>
