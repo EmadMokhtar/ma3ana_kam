@@ -40,9 +40,19 @@
 <script src="{% static "js/bootstrap-table.min.js" %}"></script>
 <script>
     $(document).ready(function() {
+        var username = '{{ user.username }}'
         $("#my-menu").mmenu({
             "classes": "mm-slide mm-black",
-            "labels": true
+            offCanvas: {
+                position  : "right",
+                zposition : "next"
+            },
+            "header": {
+
+                  "title": '<i class="glyphicon glyphicon-user" aria-hidden="true"></i> Welcome ' + username,
+                  "add": true,
+                  "update": true
+               }
         });
         $("#open-menu").click(function() {
             $("#my-menu").trigger("open.mm");
