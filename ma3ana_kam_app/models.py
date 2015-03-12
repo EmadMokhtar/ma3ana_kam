@@ -57,7 +57,7 @@ class Period(models.Model):
         super(Period, self).save(*args, **kwargs)
 
     class Meta:
-        ordering = ['start_date']
+        ordering = ['-start_date']
 
     @property
     def get_expense_total(self):
