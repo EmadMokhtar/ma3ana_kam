@@ -119,7 +119,7 @@ def delete_period(request, pk):
 def period_list(request):
     periods = Period.objects.get_period_for_user(request.user)
 
-    paginator = Paginator(periods, 10)
+    paginator = Paginator(periods, 5)
     page = request.GET.get('page')
 
     try:
