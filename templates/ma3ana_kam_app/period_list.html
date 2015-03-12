@@ -7,10 +7,13 @@
     <div class="row">
         <nav>
             <ul class="pager">
-                <li class="previous"><a href="?page={{ contacts.previous_page_number }}"><span
+
+                {% if periods.has_previous %}
+                    <li class="previous"><a href="?page={{ periods.previous_page_number }}"><span
                         aria-hidden="true">&larr;</span> Older</a></li>
-                <li class="next"><a href="?page={{ contacts.next_page_number }}">Newer <span
-                        aria-hidden="true">&rarr;</span></a></li>
+                {% endif %}
+                {% if periods.has_next %}<li class="next"><a href="?page={{ periods.next_page_number }}">Newer <span
+                        aria-hidden="true">&rarr;</span></a></li>{% endif %}
             </ul>
         </nav>
     </div>
