@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-
 {% block title %}
     Welcome to ma3ana kam | sa7e7 e7na ma3ana kam
 {% endblock %}
@@ -7,6 +6,7 @@
 {% block content %}
 
     {% if not period %}
+
         <h3>
             There is no period for Today, please go
             <a href='{% url 'add_period' %}'>here</a>
@@ -14,15 +14,25 @@
             </p>
         </h3>
     {% else %}
-        <div class="panel panel-primary">
-            <div class="panel-body">
-                <h3>Period</h3>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3>
+                    Period
+                    <div class="btn-group pull-right">
+                        <a class="btn btn-primary" href="{% url 'update_period' period.id %}">
+                            <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                        </a>
+                        <a class="btn btn-danger" href="{% url 'delete_period' period.id %}">
+                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                        </a>
+                    </div>
+                </h3>
             </div>
-            <div class="panel-footer">
+            <div class="panel-body">
                 <div class="progress">
                     <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0"
                          aria-valuemax="100" style="width: {{ period.remaining_percentage }}%;">
-                        {{ period.remaining_percentage }}%
+                        {{ period.remaining_percentage | floatformat:-2 }}%
                     </div>
                 </div>
                 <div class="form-group">
@@ -33,12 +43,12 @@
 
                 <div class="form-group">
                     <label for="period-start-date">Start Date</label>
-                    <input type="text" class="form-control" id="period-start-date" value="{{ period.start_date }}"
+                    <input type="text" class="form-control" id="period-start-date" value="{{ period.start_date |date:'d F Y' }}"
                            disabled>
                 </div>
                 <div class="form-group">
                     <label for="period-end-date">End Date</label>
-                    <input type="text" class="form-control" id="period-end-date" value="{{ period.end_date }}"
+                    <input type="text" class="form-control" id="period-end-date" value="{{ period.end_date|date:'d F Y' }}"
                            disabled>
                 </div>
                 <div class="form-group">
@@ -61,69 +71,71 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <a class="btn btn-primary btn-xs" href="{% url 'update_period' period.id %}">Edit</a>
-                    <a class="btn btn-danger btn-xs" href="{% url 'delete_period' period.id %}">Delete</a>
-                </div>
             </div>
         </div>
 
+           <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3>
+                    Expenses
+                    <div class="btn-group pull-right">
+                      <h4>Total: <mark>{{period.get_expense_total}}</mark>  </h4>
+                    </div>
+                </h3>
+            </div>
+            <div class="panel-body table-responsive">
+
+            <table class="table table-striped" data-toggle="table" data-card-view="true">
+                <thead>
+                <tr>
+                    <th>
+                        Date
+                    </th>
+                    <th>
+                        Amount
+                    </th>
+                    <th>
+                        Description
+                    </th>
+                    <th>
+                        Actions
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for expense in expenses %}
+                    <tr>
+                        <td>
+                            {{ expense.date|date:'d/M/Y' }}
+                        </td>
+                        <td>
+                            {{ expense.amount }}
+                        </td>
+                        <td>
+                            {{ expense.description }}
+
+                        </td>
+                        <td>
+                            <div class="btn-group" role="group" aria-label="...">
+                            <a class="btn btn-primary btn-sm" href="{% url 'update_expense' expense.id %}">
+                                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
+                            <a class="btn btn-danger btn-sm" href="{% url 'delete_expense' expense.id %}">
+                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
+                        </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            </div>
+        </div>
         <div class="row">
             <div class="col-sm-6">
-                <h2>Expenses</h2>
-            </div>
 
-            <div class="col-sm-6" style="margin-top: 14px">
-                <a href="{% url 'add_expense' %}" class="btn btn-default pull-right">
-                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                    Add Expense</a>
             </div>
 
         </div>
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>
-                    Date
-                </th>
-                <th>
-                    Amount
-                </th>
-                <th>
-                    Description
-                </th>
-                <th>
-
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for expense in expenses %}
-                <tr>
-                    <td>
-                        {{ expense.date }}
-                    </td>
-                    </td>
-                    <td>
-                        {{ expense.amount }}
-                    </td>
-                    <td>
-                        {{ expense.description }}
-                    </td>
-                    <td>
-                        <a class="btn btn-primary btn-xs" href="{% url 'update_expense' expense.id %}">Edit</a>
-                        <a class="btn btn-danger btn-xs" href="{% url 'delete_expense' expense.id %}">Delete</a>
-                    </td>
-                </tr>
-            {% endfor %}
-            <tr>
-                <td><b>Total</b></td>
-                <td><b>{{ period.get_expense_total }}</b></td>
-                <td></td>
-                <td></td>
-            </tr>
-            </tbody>
-        </table>
 
     {% endif %}
 
