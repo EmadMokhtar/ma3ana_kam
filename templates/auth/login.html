@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load addcssfilter %}
 <!DOCTYPE html>
 <html>
 <head lang="en">
@@ -6,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>
-        ma3ana kam | Please Login
+        Ma3ana Kam | Please Sign In
     </title>
 
     <!-- Bootstrap -->
@@ -27,11 +28,16 @@
     {% endif %}
     <form class="form-signin" method="post" action="{% url 'login' %}">{% csrf_token %}
         <h2 class="form-signin-heading">Please sign in</h2>
-        {{ form.username.label_tag }}
-        {{ form.username }}
-        {{ form.password.label_tag }}
-        {{ form.password }}
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
+
+        <div class="form-group">
+            {{ form.username.label_tag }}
+            {{ form.username|addcss:'form-control' }}
+        </div>
+        <div class="form-group">
+            {{ form.password.label_tag }}
+            {{ form.password|addcss:'form-control' }}
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
         <input type="hidden" name="next" value="{{ next }}"/>
     </form>
 

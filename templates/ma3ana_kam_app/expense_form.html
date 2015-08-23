@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
+{% block title %}
+    Ma3ana Kam | Expense Form
+{% endblock %}
+
 {% block content %}
-    <h2>Expense</h2>
     {% if errors %}
         <div class="alert alert-danger" role="alert">
             {% for error in errors %}
@@ -12,7 +15,14 @@
             {% endfor %}
         </div>
     {% endif %}
+
     <form method="post">{% csrf_token %}
+    <h2>
+        Expense
+        <input type="submit" value="Save" class="btn btn-primary pull-right"/>
+    </h2>
+
+
         {% for field in form.visible_fields %}
             <div class="control-group {{ field.html_name }} {% if field.errors %}has-error{% endif %}">
                 <label class="control-label">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
@@ -26,7 +36,6 @@
         {% for field in form.hidden_fields %}
             {{ field }}
         {% endfor %}
-        <input type="submit" value="Save" class="btn btn-primary"/>
     </form>
 
 {% endblock %}
