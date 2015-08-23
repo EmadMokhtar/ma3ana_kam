@@ -6,6 +6,11 @@ from django.db import models
 from django.db.models import Sum
 from django.utils.translation import ugettext_lazy as _
 
+class PeriodList(models.Model):
+    """ Priod List will be container for peiords """
+    name = models.CharField(max_length=25, verbose_name=_('Name'))
+    created_by = models.ForeignKey(User, verbose_name=_('Created By'))
+    created_at = models.DateTimeField(auto_now_add=True)
 
 class PeriodManager(models.Manager):
     def get_period_for_date(self, date, logged_in_user):
@@ -27,6 +32,7 @@ class Period(models.Model):
     amount = models.DecimalField(max_digits=8, decimal_places=3)
     description = models.CharField(max_length=200)
     user = models.ForeignKey(User)
+    period_list = models.ForeignKey(PeriodList, verbose_name=_('Period List'), null=True)
     objects = PeriodManager()
 
     def __unicode__(self):
