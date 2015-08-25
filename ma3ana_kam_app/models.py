@@ -13,7 +13,7 @@ class PeriodList(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 class PeriodManager(models.Manager):
-    def get_periods_for_date_and_user(self, date, logged_in_user):
+    def get_periods_for_date_and_user(self, date, logged_in_user, period_list):
         """
         Get periods for specific date
         :param date:
@@ -21,7 +21,10 @@ class PeriodManager(models.Manager):
         :return:
         """
         try:
-            period = self.filter(start_date__lte=date, end_date__gte=date, user=logged_in_user)
+            period = self.filter(start_date__lte=date, 
+                                end_date__gte=date, 
+                                user=logged_in_user,
+                                period_list=period_list)
         except IndexError:
             period = None
         return period
@@ -64,12 +67,16 @@ class Period(models.Model):
         return self.description
 
     def validate(self):
-        if self.id:
-            period_from_start_date = Period.objects.get_periods_for_date_and_user(self.start_date, self.user).exclude(pk=self.id)
-            period_from_end_date = Period.objects.get_periods_for_date_and_user(self.end_date, self.user).exclude(pk=self.id)
-        else:
-            period_from_start_date = Period.objects.get_periods_for_date_and_user(self.start_date, self.user)
-            period_from_end_date = Period.objects.get_periods_for_date_and_user(self.end_date, self.user)
+        period_from_start_date = Period.objects.get_periods_for_date_and_user(self.start_date, 
+                                                                              self.user,
+                                                                              self.period_list)
+        period_from_end_date = Period.objects.get_periods_for_date_and_user(self.end_date, 
+                                                                            self.user,
+                                                                            self.period_list)
+
+        if self.pk:
+            period_from_start_date = period_from_start_date.exclude(pk=self.pk)
+            period_from_end_date = period_from_end_date.exclude(pk=self.pk)
 
         if self.start_date >= self.end_date:
             raise ValidationError(_('Please check the start date and end date, '
@@ -79,6 +86,7 @@ class Period(models.Model):
         elif period_from_end_date:
             raise ValidationError(_('Please check the end date, it is overlapping with other period'))
 
+        return True
     def save(self, *args, **kwargs):
         if self.validate():
             return super(Period, self).save(*args, **kwargs)
