@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.forms import ValidationError
-from ..models import PeriodList, Period
+from ..models import PeriodList, Period, Expense
 import datetime
 
 class PeriodListTestCases(TestCase):
@@ -159,3 +159,86 @@ class PeriodTestCases(TestCase):
 		new_period.save()
 		new_period.end_date = self.end_date
 		self.assertRaises(ValidationError, lambda: new_period.save())
+
+
+class ExpenseTestCases(TestCase):
+	"""
+	Tests Expense Business Logic
+	"""
+
+	def setUp(self):
+		"""
+		Test initial setup
+		"""
+		self.user = User.objects.create_user('user','user@email.com','password')
+		self.period_list, created = PeriodList.objects.get_or_create(name='first_period_list',
+			                                                         created_by=self.user)
+		self.start_date = datetime.date(2015,1,1)
+		self.end_date = datetime.date(2015,2,1)
+		self.period, created = Period.objects.get_or_create(start_date=self.start_date,
+												   			end_date=self.end_date,
+												   			amount=100,
+												   			description='test new period',
+												   			period_list= self.period_list,
+												   			user=self.user)
+
+		self.expense, created = Expense.objects.get_or_create(date=self.start_date,
+							  						  	      period=self.period,
+							                                  user=self.user,
+							                                  amount=12,
+							                                  description='new expense')
+
+	def test_creating_new_expense(self):
+		"""
+		Tests creating new expense
+		"""
+		expense_date = datetime.date(2015, 1, 15)
+		new_expense = Expense(date=expense_date,
+							  period=self.period,
+							  user=self.user,
+							  amount=12,
+							  description='new expense')
+		new_expense.save()
+
+		self.assertIsInstance(new_expense, Expense)
+		self.assertTrue(new_expense.pk)
+
+	def test_creating_new_expense_with_invalid_date_should_fail(self):
+		"""
+		Tests creating new expense with date has no period setup should fail
+		"""
+		expense_date = datetime.date(2015, 12, 15)
+		new_expense = Expense(date=expense_date,
+							  period=self.period,
+							  user=self.user,
+							  amount=12,
+							  description='new expense')
+		self.assertRaises(ValidationError, lambda: new_expense.save())
+
+	def test_update_expense(self):
+		"""
+		Tests update expense
+		"""
+		expense_date = datetime.date(2015, 1, 15)
+		self.expense.date = expense_date
+		self.expense.save()
+
+		self.assertEqual(self.expense.date, expense_date)
+
+	def test_update_expense_with_invalid_date_should_fail(self):
+		"""
+		Tests update expense with date has no period setup should fail
+		"""
+		expense_date = expense_date = datetime.date(2015, 12, 15)
+		self.expense.date = expense_date
+		
+
+		self.assertRaises(ValidationError, lambda:self.expense.save())
+
+	def test_delete_expense(self):
+		"""
+		Tests deleting expense
+		"""
+		self.expense.delete()
+
+		self.assertFalse(self.expense.pk) 

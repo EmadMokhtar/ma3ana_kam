@@ -1,7 +1,7 @@
 import decimal
 import datetime
 from django.contrib.auth.models import User
-from django.forms import ValidationError
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Sum
 from django.utils.translation import ugettext_lazy as _
@@ -129,7 +129,7 @@ class Expense(models.Model):
         return super(Expense, self).save(*args, **kwargs)
 
     def validate(self):
-        period = Period.objects.get_periods_for_date_and_user(self.date, self.user)
+        period = Period.objects.get_periods_for_date_and_user(self.date, self.user, self.period.period_list)
         if not period:
             raise ValidationError('Please check the date, there is no period in this date.')
 
