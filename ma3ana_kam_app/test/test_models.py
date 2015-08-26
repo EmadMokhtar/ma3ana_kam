@@ -38,7 +38,6 @@ class PeriodListTestCases(TestCase):
 class PeriodTestCases(TestCase):
 	""" Testing Period Business Logic"""
 
-
 	def setUp(self):
 		""" Test inital setup"""
 		self.user = User.objects.create_user('user','user@email.com','password')
@@ -53,7 +52,6 @@ class PeriodTestCases(TestCase):
 												   			period_list= self.period_list,
 												   			user=self.user)
 		
-
 	def test_add_new_period(self):
 		""" Tests creating new period"""
 		start_date = datetime.date(2015,2,2)
@@ -68,14 +66,6 @@ class PeriodTestCases(TestCase):
 
 		self.assertIsInstance(new_period, Period)
 		self.assertTrue(new_period.pk)
-
-	def test_update_period(self):
-		""" Test updating period"""
-		new_start_date = datetime.date(2015, 1, 2)
-		self.period.start_date = new_start_date
-		self.period.save()
-
-		self.assertEqual(new_start_date, self.period.start_date)
 
 	def test_creating_period_with_same_start_end_dates_should_fail(self):
 		""" Tests insert new period with start & end dates for existing"""
@@ -113,4 +103,59 @@ class PeriodTestCases(TestCase):
 							period_list= self.period_list,
 							user=self.user)
 		
+		self.assertRaises(ValidationError, lambda: new_period.save())
+
+	def test_update_period(self):
+		""" Test updating period"""
+		new_start_date = datetime.date(2015, 1, 2)
+		self.period.start_date = new_start_date
+		self.period.save()
+
+		self.assertEqual(new_start_date, self.period.start_date)
+
+	def test_updating_period_with_same_start_end_dates_should_fail(self):
+		""" Tests update period with start & end dates for existing"""
+		""" user period in the same list should fail and raise ValidationError"""
+		start_date = datetime.date(2015,2,2)
+		end_date = datetime.date(2015,3,1)
+		new_period = Period(start_date=start_date,
+							end_date=end_date,
+							amount=100,
+							description='test new period',
+							period_list= self.period_list,
+							user=self.user)
+
+		new_period.save()
+		new_period.start_date = self.start_date
+		new_period.end_date = self.end_date
+		self.assertRaises(ValidationError, lambda: new_period.save())
+
+	def test_updateing_period_with_same_start_date_should_fail(self):
+		""" Tests update period with start date for existing"""
+		""" user period in the same list should fail and raise ValidationError"""
+		start_date = datetime.date(2015,2,2)
+		end_date = datetime.date(2015,3,1)
+		new_period = Period(start_date=start_date,
+							end_date=end_date,
+							amount=100,
+							description='test new period',
+							period_list= self.period_list,
+							user=self.user)
+		new_period.save()
+		new_period.end_date = self.end_date
+		self.assertRaises(ValidationError, lambda: new_period.save())
+
+	def test_creating_period_with_same_end_date_should_fail(self):
+		""" Tests update period with end date for existing"""
+		""" user period in the same list should fail and raise ValidationError"""
+		start_date = datetime.date(2015,2,2)
+		end_date = datetime.date(2015,3,1)
+		new_period = Period(start_date=start_date,
+							end_date=end_date,
+							amount=100,
+							description='test new period',
+							period_list= self.period_list,
+							user=self.user)
+		new_period.save()
+		new_period.end_date = self.end_date
 		self.assertRaises(ValidationError, lambda: new_period.save())
