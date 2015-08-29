@@ -18,8 +18,6 @@ def index(request, template_name='ma3ana_kam_app/period_details.html'):
     """
     current_period = Period.objects.get_today_period(request.user)
     current_expenses = Expense.objects.filter(period=current_period)
-
-
     return render(request, template_name,
                   {'period': current_period, 'expenses': current_expenses})
 
@@ -41,12 +39,11 @@ def add_expense(request, template_name='ma3ana_kam_app/expense_form.html'):
             expense = expense_form.save(commit=False)
             expense.user = request.user
             expense.save()
-            # Add reverse for the URL
-            return redirect('/')
+            return redirect(reverse('period_details', args(expense.period_id,)))
         except ValidationError as e:
             errors = e.messages
         except ValueError as e:
-            return render(request, template_name, {'form': expense_form, 'errors': errors})
+            errors = e.messages
 
     return render(request, template_name, {'form': expense_form, 'errors': errors})
 
@@ -68,7 +65,7 @@ def update_expense(request, pk, template_name='ma3ana_kam_app/expense_form.html'
 
     if expense_form.is_valid():
         expense_form.save()
-        return redirect('/')
+        return redirect(reverse('period_details', args(expense.period_id,)))
 
     return render(request, template_name, {'form': expense_form})
 
@@ -84,8 +81,9 @@ def delete_expense(request, pk, template_name='ma3ana_kam_app/model_delete.html'
     """
     expense = get_object_or_404(Expense, pk=pk)
     if request.method == 'POST':
+        period_id = expense.period_id
         expense.delete()
-        return redirect('/')
+        return redirect(reverse('period_details', args(expense.period_id,)))
 
     return render(request, template_name, {'model': expense, 'model_name': 'expense'})
 
@@ -109,7 +107,7 @@ def add_period(request, template_name='ma3ana_kam_app/period_form.html'):
             period = period_form.save(commit=False)
             period.user = request.user
             period.save()
-            return redirect(reverse('home'))
+            return redirect(return redirect(reverse('period_details', args(period.pk,))))
         except ValidationError as e:
             errors = e.messages
         except ValueError:
@@ -137,7 +135,7 @@ def update_period(request, pk, template_name='ma3ana_kam_app/period_form.html'):
             period_data = period_form.save(commit=False)
             period_data.user = request.user
             period_data.save()
-            return redirect(reverse('home'))
+            return redirect(return redirect(reverse('period_details', args(period.pk,))))
     return render(request, template_name, {'form': period_form})
 
 @login_required()
