@@ -21,8 +21,8 @@ class PeriodManager(models.Manager):
         :return:
         """
         try:
-            period = self.filter(start_date__lte=date, 
-                                end_date__gte=date, 
+            period = self.filter(start_date__lte=date,
+                                end_date__gte=date,
                                 user=logged_in_user,
                                 period_list=period_list)
         except IndexError:
@@ -67,10 +67,10 @@ class Period(models.Model):
         return self.description
 
     def validate(self):
-        period_from_start_date = Period.objects.get_periods_for_date_and_user(self.start_date, 
+        period_from_start_date = Period.objects.get_periods_for_date_and_user(self.start_date,
                                                                               self.user,
                                                                               self.period_list)
-        period_from_end_date = Period.objects.get_periods_for_date_and_user(self.end_date, 
+        period_from_end_date = Period.objects.get_periods_for_date_and_user(self.end_date,
                                                                             self.user,
                                                                             self.period_list)
 
@@ -95,8 +95,8 @@ class Period(models.Model):
         ordering = ['-start_date']
 
     @property
-    def get_expense_total(self):
-        return Expense.objects.filter(period=self).aggregate(Sum('amount')).get('amount__sum')
+    def expense_total(self):
+        return self.expenses.aggregate(Sum('amount')).get('amount__sum')
 
     @property
     def remaining_amount(self):
@@ -116,7 +116,7 @@ class Expense(models.Model):
     date = models.DateField(default=datetime.datetime.now())
     description = models.CharField(max_length=200)
     amount = models.DecimalField(max_digits=8, decimal_places=3)
-    period = models.ForeignKey(Period)
+    period = models.ForeignKey(Period, related_name='expenses')
     user = models.ForeignKey(User)
 
     def __unicode__(self):
