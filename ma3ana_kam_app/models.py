@@ -18,13 +18,32 @@ class PeriodManager(models.Manager):
         Get periods for specific date
         :param date:
         :param logged_in_user:
+        :param period_list:
+        :return:
+        """
+        try:
+            periods = self.filter(start_date__lte=date,
+                                end_date__gte=date,
+                                user=logged_in_user,
+                                period_list=period_list)
+        except IndexError:
+            periods = None
+
+        return periods
+
+    def get_user_period_for_date(self, date, logged_in_user, period_list):
+        """
+        Get user's period for specific date
+        :param date:
+        :param logged_in_user:
+        :param period_list:
         :return:
         """
         try:
             period = self.filter(start_date__lte=date,
                                 end_date__gte=date,
                                 user=logged_in_user,
-                                period_list=period_list)
+                                period_list=period_list)[0]
         except IndexError:
             period = None
         return period
@@ -60,7 +79,9 @@ class Period(models.Model):
     amount = models.DecimalField(max_digits=8, decimal_places=3)
     description = models.CharField(max_length=200)
     user = models.ForeignKey(User)
-    period_list = models.ForeignKey(PeriodList, verbose_name=_('Period List'), null=True)
+    period_list = models.ForeignKey(PeriodList,
+                                    verbose_name=_('Period List'),
+                                    null=True)
     objects = PeriodManager()
 
     def __unicode__(self):
@@ -123,15 +144,13 @@ class Expense(models.Model):
         return self.description
 
     def save(self, *args, **kwargs):
-        if self.validate():
-            self.period = Period.objects.get_periods_for_date_and_user(self.date, self.user)[0]
-
-        return super(Expense, self).save(*args, **kwargs)
-
-    def validate(self):
-        period = Period.objects.get_periods_for_date_and_user(self.date, self.user, self.period.period_list)
+        period = Period.objects.get_user_period_for_date(self.date,
+                                                         self.user,
+                                                         self.period.period_list)
         if not period:
             raise ValidationError('Please check the date, there is no period in this date.')
+        self.period = period
+        return super(Expense, self).save(*args, **kwargs)
 
     def is_belong_to_user(self, logged_in_user):
         return self.user == logged_in_user
