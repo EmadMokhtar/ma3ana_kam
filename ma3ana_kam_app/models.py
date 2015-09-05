@@ -13,7 +13,7 @@ class PeriodList(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 class PeriodManager(models.Manager):
-    def get_periods_for_date_and_user(self, date, logged_in_user, period_list):
+    def get_user_periods_for_date(self, date, logged_in_user, period_list):
         """
         Get periods for specific date
         :param date:
@@ -21,15 +21,11 @@ class PeriodManager(models.Manager):
         :param period_list:
         :return:
         """
-        try:
-            periods = self.filter(start_date__lte=date,
-                                end_date__gte=date,
-                                user=logged_in_user,
-                                period_list=period_list)
-        except IndexError:
-            periods = None
+        return self.filter(start_date__lte=date,
+                           end_date__gte=date,
+                           user=logged_in_user,
+                           period_list=period_list)
 
-        return periods
 
     def get_user_period_for_date(self, date, logged_in_user, period_list):
         """
@@ -40,11 +36,11 @@ class PeriodManager(models.Manager):
         :return:
         """
         try:
-            period = self.filter(start_date__lte=date,
+            period = self.get(start_date__lte=date,
                                 end_date__gte=date,
                                 user=logged_in_user,
-                                period_list=period_list)[0]
-        except IndexError:
+                                period_list=period_list)
+        except Period.DoesNotExist:
             period = None
         return period
 
