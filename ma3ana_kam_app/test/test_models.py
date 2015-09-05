@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
-from django.forms import ValidationError
+from django.core.exceptions import ValidationError
 from ..models import PeriodList, Period, Expense
 import datetime
 
