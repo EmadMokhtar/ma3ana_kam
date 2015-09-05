@@ -87,27 +87,43 @@ class Period(models.Model):
     def __unicode__(self):
         return self.description
 
+    def is_start_date_invalid(self):
+        """
+        Check if period's start date are overlapping with another
+        period in the same period list
+        """
+        return Period.objects.filter(user=self.user,
+                              period_list=self.period_list,
+                              start_date__lte=self.start_date,
+                              end_date__gte=self.start_date).exclude(pk=self.pk).exists()
+
+    def is_end_date_invalid(self):
+        """
+        Check if period's start date are overlapping with another
+        period in the same period list
+        """
+        return Period.objects.filter(user=self.user,
+                                     period_list=self.period_list,
+                                     start_date__lte=self.end_date,
+                                     end_date__gte=self.end_date).exclude(pk=self.pk).exists()
+
     def validate(self):
-        period_from_start_date = Period.objects.get_periods_for_date_and_user(self.start_date,
-                                                                              self.user,
-                                                                              self.period_list)
-        period_from_end_date = Period.objects.get_periods_for_date_and_user(self.end_date,
-                                                                            self.user,
-                                                                            self.period_list)
-
-        if self.pk:
-            period_from_start_date = period_from_start_date.exclude(pk=self.pk)
-            period_from_end_date = period_from_end_date.exclude(pk=self.pk)
-
+        """
+        Validate period's start and end dates:
+        1- Start date are earlier that enda date.
+        2- Start date not over lapping with other period in the period list.
+        3- End date not over lapping with other period in the period list.
+        """
         if self.start_date >= self.end_date:
             raise ValidationError(_('Please check the start date and end date, '
                                     'start date can not be as same or after end date'))
-        elif period_from_start_date:
+        elif self.is_start_date_invalid():
             raise ValidationError(_('Please check the start date, it is overlapping with other period'))
-        elif period_from_end_date:
+        elif self.is_end_date_invalid():
             raise ValidationError(_('Please check the end date, it is overlapping with other period'))
 
         return True
+
     def save(self, *args, **kwargs):
         if self.validate():
             return super(Period, self).save(*args, **kwargs)
@@ -127,6 +143,11 @@ class Period(models.Model):
     def remaining_percentage(self):
         total = self.get_expense_total
         return (total / self.amount) * decimal.Decimal(100)
+
+    @property
+    def expenses(self):
+        return self.objects.expenses
+
 
     def is_belong_to_user(self, logged_in_user):
         return self.user == logged_in_user
